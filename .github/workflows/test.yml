@@ -1,22 +1,30 @@
+name: wif-ci
 on:
   push:
     branches: 'main'
-name: "Workload name"
 jobs:
-  run:
-    name: "Example Job name"
-    permissions:
-      id-token: write
-      contents: read
+  build:
+    name: "Test WIF"
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        token_format: "access_token"
-        workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
-        service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
-    - name: List Cloud SQL instances
-      run: |
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          token_format: "access_token"
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
+          service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+      - name: List Cloud SQL instances
+        run: |
+          gcloud auth list
           gcloud sql instances list \
             --project=${{ secrets.GCP_PROJECT_ID }}
