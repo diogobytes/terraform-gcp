@@ -17,7 +17,7 @@ jobs:
         uses: google-github-actions/auth@v0.4.0
         with:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
-          service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+          service_account: "gh-actions-wif@arctic-ocean-427610-u4.iam.gserviceaccount.com"
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.3.0
       - name: List Cloud SQL instances
