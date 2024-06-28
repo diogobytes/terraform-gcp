@@ -20,21 +20,7 @@ jobs:
           service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.3.0
-      - name: Create Cloud SQL instance
+      - name: List Cloud SQL instances
         run: |
-          gcloud sql instances create my-sql-instance \
-            --database-version=MYSQL_5_7 \
-            --tier=db-f1-micro \
-            --region=us-central1 \
+          gcloud sql instances list \
             --project=${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Set root password
-        run: |
-          gcloud sql users set-password root \
-            --host=% \
-            --instance=my-sql-instance \
-            --password=${{ secrets.CLOUD_SQL_ROOT_PASSWORD }}
-
-      - name: Output Cloud SQL instance details
-        run: |
-          gcloud sql instances describe my-sql-instance
