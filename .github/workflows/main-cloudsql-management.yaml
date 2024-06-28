@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+
 env:
   START_CRON: '*/15 * * * *'
 
@@ -31,16 +32,15 @@ jobs:
             fi
           else
             echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is not schedule
-          fi
 
-  start-stop-cloudsql:
-    name: Start/Stop Cloud SQL Instance
+  start-stop-cloudsql-instance-1:
+    name: Start/Stop Cloud SQL Instance 1
     needs: determine-action
     uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
     with:
       action: ${{ needs.determine-action.outputs.action }}
+      instance_name: "teste"
     secrets:
       GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
       GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      GCP_CLOUDSQL_INSTANCE: ${{ secrets.GCP_CLOUDSQL_INSTANCE }}
