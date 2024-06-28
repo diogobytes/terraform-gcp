@@ -52,12 +52,11 @@ jobs:
       - name: Determine Action
         run: |
           action="${{ github.event.inputs.action }}"
-          echo $action
-          if [ "$action" == "start" ]; then
+          if [ "${{ inputs.action }}" == "start" ]; then
             gcloud sql instances patch teste \
               --activation-policy=ALWAYS \
               --project=${{ secrets.GCP_PROJECT_ID }}
-          elif [ "$action" == "stop" ]; then
+          elif [ "${{ inputs.action }} == "stop" ]; then
             gcloud sql instances patch teste \
               --activation-policy=NEVER \
               --project=${{ secrets.GCP_PROJECT_ID }}
