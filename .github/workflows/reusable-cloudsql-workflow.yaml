@@ -14,9 +14,9 @@ name: Reusable Cloud SQL Instance Management (Start and Stop)
 
 on:
   workflow_call:
-    inputs:
-      action:
-        description: 'Action to perform (start or stop)'
+   action:
+        description: 'Action to perform (start or pause)'
+        default: 'pause'
         required: true
         type: string
     secrets:
