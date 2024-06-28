@@ -16,6 +16,9 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Determine Action
         id: determine_action
         run: |
