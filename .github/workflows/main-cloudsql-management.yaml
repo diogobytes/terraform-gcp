@@ -2,12 +2,12 @@ name: Start or Stop Cloud SQL Instance Caller
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '00 23 * * 1'
   push:
     branches:
       - main
 env:
-  START_CRON: '*/15 * * * *'
+  START_CRON: '00 23 * * 1'
 
 permissions:
   id-token: write
@@ -34,7 +34,7 @@ jobs:
           fi
 
   start-stop-cloudsql-instance-teste:
-    name: Start/Stop Cloud SQL Instance
+    name: Start/Stop Cloud SQL Instance teste
     needs: determine-action
     uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
     with:
@@ -46,7 +46,7 @@ jobs:
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
   start-stop-cloudsql-instance-teste123:
-    name: Start/Stop Cloud SQL Instance
+    name: Start/Stop Cloud SQL Instance teste123
     needs: determine-action
     uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
     with:
