@@ -17,7 +17,6 @@ on:
     inputs:
       action:
         description: 'Action to perform (start or stop)'
-        default: 'stop'
         required: true
         type: string
     secrets:

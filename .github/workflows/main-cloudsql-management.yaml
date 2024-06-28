@@ -3,9 +3,6 @@ name: Start or Stop Cloud SQL Instance
 on:
   schedule:
     - cron: '*/5 * * * *'
-  push:
-    branches:
-      - main
 
 env:
   START_CRON: '*/5 * * * *'
@@ -28,12 +25,10 @@ jobs:
             if [[ "${{ github.event.schedule }}" == "${{ env.START_CRON }}" ]]; then
               echo "action=start" >> $GITHUB_OUTPUT
             else
-              echo "action=stop" >> $GITHUB_OUTPUT
+              echo "action=pause" >> $GITHUB_OUTPUT
             fi
-          elif [[ "${{ github.event_name }}" == "push" ]]; then
-            echo "action=start" >> $GITHUB_OUTPUT  # Default action for push event to main branch
           else
-            echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is neither schedule nor push
+            echo "action=pause" >> $GITHUB_OUTPUT  # Default action if event is not schedule
           fi
 
   start-stop-cloudsql:
