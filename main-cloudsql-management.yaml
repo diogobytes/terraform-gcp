@@ -1,0 +1,46 @@
+name: Start or Stop Cloud SQL Instance Caller
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  push:
+    branches:
+      - main
+env:
+  START_CRON: '*/15 * * * *'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  determine-action:
+    name: Determine Action
+    outputs:
+      action: ${{ steps.determine_action.outputs.action }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine Action
+        id: determine_action
+        run: |
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            if [[ "${{ github.event.schedule }}" == "${{ env.START_CRON }}" ]]; then
+              echo "action=start" >> $GITHUB_OUTPUT
+            else
+              echo "action=stop" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is not schedule
+          fi
+
+  start-stop-cloudsql:
+    name: Start/Stop Cloud SQL Instance
+    needs: determine-action
+    uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
+    with:
+      action: ${{ needs.determine-action.outputs.action }}
+    secrets:
+      GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
+      GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_CLOUDSQL_INSTANCE: ${{ secrets.GCP_CLOUDSQL_INSTANCE }}
