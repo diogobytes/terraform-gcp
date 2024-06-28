@@ -27,10 +27,10 @@ jobs:
             if [[ "${{ github.event.schedule }}" == "${{ env.START_CRON }}" ]]; then
               echo "action=start" >> $GITHUB_OUTPUT
             else
-              echo "action=pause" >> $GITHUB_OUTPUT
+              echo "action=stop" >> $GITHUB_OUTPUT
             fi
           else
-            echo "action=pause" >> $GITHUB_OUTPUT  # Default action if event is not schedule
+            echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is not schedule
           fi
 
   start-stop-cloudsql:
