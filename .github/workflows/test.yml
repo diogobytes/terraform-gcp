@@ -1,4 +1,4 @@
-name: wif-ci
+name: wif-gh
 on:
   push:
     branches: 'main'
