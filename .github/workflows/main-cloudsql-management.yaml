@@ -1,4 +1,4 @@
-name: Manage Cloud SQL Instances
+name: Start or Stop Cloud SQL Instance
 
 on:
   schedule:
@@ -28,7 +28,7 @@ jobs:
           fi
           echo "::set-output name=action::$action"
 
-      - name: Manage Cloud SQL Instance
+      - name: Execute Reusable Workflow
         uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
         with:
           action: ${{ steps.determine_action.outputs.action }}

@@ -1,4 +1,4 @@
-name: Start or Stop Cloud SQL Instance
+name: Manage Cloud SQL Instances
 
 on:
   workflow_call:
@@ -52,4 +52,3 @@ jobs:
             echo "Invalid action specified."
             exit 1
           fi
-
