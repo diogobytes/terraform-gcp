@@ -3,7 +3,9 @@ name: Manage Cloud SQL Instances
 on:
   schedule:
     - cron: '*/5 * * * *'
-
+  push:
+    branches:
+      - main
 
 env:
   START_CRON: '0 7 * * 1-5'
@@ -17,8 +19,15 @@ jobs:
       - name: Determine Action
         id: determine_action
         run: |
-          action=$(if [ "${{ github.event.schedule }}" == ${{ env.START_CRON }} ]; then echo "start"; else echo "stop"; fi)
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            action=$(if [ "${{ github.event.schedule }}" == "${{ env.START_CRON }}" ]; then echo "start"; else echo "stop"; fi)
+          elif [ "${{ github.event_name }}" == "push" ]; then
+            action="start"  # Default action for push event to main branch
+          else
+            action="stop"   # Default action if event is neither schedule nor push
+          fi
           echo "::set-output name=action::$action"
+
       - name: Manage Cloud SQL Instance
         uses: ./.github/workflows/start-stop-cloudsql.yml
         with:
