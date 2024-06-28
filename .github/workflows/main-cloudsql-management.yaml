@@ -8,31 +8,41 @@ on:
       - main
 
 env:
-  START_CRON: '0 7 * * 1-5'
-  PAUSE_CRON: '0 20 * * 1-5'
+  START_CRON: '*/5 * * * *'
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  setup:
-    name: Setup
+  determine-action:
+    name: Determine Action
+    outputs:
+      action: ${{ steps.determine_action.outputs.action }}
     runs-on: ubuntu-latest
     steps:
       - name: Determine Action
         id: determine_action
         run: |
-          if [ "${{ github.event_name }}" == "schedule" ]; then
-            action=$(if [ "${{ github.event.schedule }}" == "${{ env.START_CRON }}" ]; then echo "start"; else echo "stop"; fi)
-          elif [ "${{ github.event_name }}" == "push" ]; then
-            action="start"  # Default action for push event to main branch
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            if [[ "${{ github.event.schedule }}" == "${{ env.START_CRON }}" ]]; then
+              echo "action=start" >> $GITHUB_OUTPUT
+            else
+              echo "action=stop" >> $GITHUB_OUTPUT
+            fi
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "action=start" >> $GITHUB_OUTPUT  # Default action for push event to main branch
           else
-            action="stop"   # Default action if event is neither schedule nor push
+            echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is neither schedule nor push
           fi
-          echo "::set-output name=action::$action"
 
-      - name: Execute Reusable Workflow
-        uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
-        with:
-          action: ${{ steps.determine_action.outputs.action }}
-        env:
-          GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
-          GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  start-stop-cloudsql:
+    name: Start/Stop Cloud SQL Instance
+    needs: determine-action
+    uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
+    with:
+      action: ${{ needs.determine-action.outputs.action }}
+    secrets:
+      GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
+      GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
