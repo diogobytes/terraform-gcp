@@ -23,7 +23,8 @@ jobs:
         uses: 'google-github-actions/setup-gcloud@v2'
         with:
           version: '>= 363.0.0'
-      - name: List Cloud SQL instances
+      - name: Stop Cloud SQL instances
         run: |
-          gcloud sql instances list \
+          gcloud sql instances patch teste \
+          --activation-policy=NEVER \
             --project=${{ secrets.GCP_PROJECT_ID }}
