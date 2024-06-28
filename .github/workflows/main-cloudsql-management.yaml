@@ -1,4 +1,4 @@
-name: Start or Stop Cloud SQL Instance
+name: Start or Stop Cloud SQL Instance Caller
 
 on:
   schedule:
