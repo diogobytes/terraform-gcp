@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-
 env:
   START_CRON: '*/15 * * * *'
 
@@ -32,9 +31,10 @@ jobs:
             fi
           else
             echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is not schedule
+          fi
 
-  start-stop-cloudsql-instance-1:
-    name: Start/Stop Cloud SQL Instance 1
+  start-stop-cloudsql:
+    name: Start/Stop Cloud SQL Instance
     needs: determine-action
     uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
     with:
