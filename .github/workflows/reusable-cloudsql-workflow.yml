@@ -1,0 +1,56 @@
+name: Start or Stop Cloud SQL Instance
+
+on:
+  workflow_call:
+    inputs:
+      action:
+        description: 'Action to perform (start or stop)'
+        required: true
+        type: string
+    secrets:
+      GCP_WORKLOAD_IDENTITY_PROVIDER_NAME:
+        required: true
+      GCP_WORKLOAD_IDENTITY_SA_EMAIL:
+        required: true
+      GCP_PROJECT_ID:
+        required: true
+
+jobs:
+  manage-cloudsql:
+    name: Manage Cloud SQL Instance
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Authenticate with Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: "access_token"
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
+          service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Determine Action
+        run: |
+          action="${{ github.event.inputs.action }}"
+          if [ "$action" == "start" ]; then
+            gcloud sql instances patch INSTANCE_NAME \
+              --activation-policy=ALWAYS \
+              --project=${{ secrets.GCP_PROJECT_ID }}
+          elif [ "$action" == "stop" ]; then
+            gcloud sql instances patch INSTANCE_NAME \
+              --activation-policy=NEVER \
+              --project=${{ secrets.GCP_PROJECT_ID }}
+          else
+            echo "Invalid action specified."
+            exit 1
+          fi

@@ -1,0 +1,29 @@
+name: Manage Cloud SQL Instances
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+
+env:
+  START_CRON: '0 7 * * 1-5'
+  PAUSE_CRON: '0 20 * * 1-5'
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine Action
+        id: determine_action
+        run: |
+          action=$(if [ "${{ github.event.schedule }}" == ${{ env.START_CRON }} ]; then echo "start"; else echo "stop"; fi)
+          echo "::set-output name=action::$action"
+      - name: Manage Cloud SQL Instance
+        uses: ./.github/workflows/start-stop-cloudsql.yml
+        with:
+          action: ${{ steps.determine_action.outputs.action }}
+        env:
+          GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
+          GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}

@@ -1,5 +1,6 @@
 locals {
-  project_id = "arctic-ocean-427610-u4"
+  project_id  = "arctic-ocean-427610-u4"
+  gh_username = "diogobytes"
 }
 
 provider "google" {
@@ -20,7 +21,7 @@ resource "google_iam_workload_identity_pool_provider" "github_actions" {
   workload_identity_pool_provider_id = "github-actions"
   display_name                       = "GitHub Actions provider"
   description                        = "Workload Identity Pool Provider managed by Terraform"
-  attribute_condition                = "attribute.repository_owner==\"diogobytes\""
+  attribute_condition                = "attribute.repository_owner==\"${local.gh_username}\""
   attribute_mapping = {
     "google.subject"             = "assertion.sub"
     "attribute.actor"            = "assertion.actor"
