@@ -7,6 +7,7 @@ on:
         description: 'Action to perform (start or stop)'
         required: true
         type: string
+        default: 'pause'
     secrets:
       GCP_WORKLOAD_IDENTITY_PROVIDER_NAME:
         required: true
