@@ -3,7 +3,9 @@ name: Start or Stop Cloud SQL Instance
 on:
   schedule:
     - cron: '*/5 * * * *'
-
+  push:
+    branches:
+      - main
 env:
   START_CRON: '*/5 * * * *'
 
