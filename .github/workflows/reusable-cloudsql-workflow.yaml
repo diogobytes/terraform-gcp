@@ -16,7 +16,7 @@ on:
   workflow_call:
     inputs:
       action:
-        description: 'Action to perform (start or pause)'
+        description: 'Action to perform (start or stop)'
         default: 'stop'
         required: true
         type: string
@@ -52,6 +52,7 @@ jobs:
       - name: Determine Action
         run: |
           action="${{ github.event.inputs.action }}"
+          echo $action
           if [ "$action" == "start" ]; then
             gcloud sql instances patch teste \
               --activation-policy=ALWAYS \
