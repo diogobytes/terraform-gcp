@@ -21,7 +21,10 @@ jobs:
           service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: List Cloud SQL instances
         run: |
+          gcloud auth list
           gcloud sql instances list \
             --project=${{ secrets.GCP_PROJECT_ID }}
