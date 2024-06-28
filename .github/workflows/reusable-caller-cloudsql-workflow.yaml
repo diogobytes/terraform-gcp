@@ -32,7 +32,7 @@ jobs:
           echo "::set-output name=action::$action"
 
       - name: Manage Cloud SQL Instance
-        uses: ./.github/workflows/reusable-cloudsql-workflow.yml
+        uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
         with:
           action: ${{ steps.determine_action.outputs.action }}
         env:
