@@ -1,4 +1,4 @@
-name: Start or Stop Cloud SQL Instances
+name: Start or Stop Cloud SQL Instance Caller
 
 on:
   schedule:
@@ -40,7 +40,7 @@ jobs:
     uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
     with:
       action: ${{ needs.determine-action.outputs.action }}
-      instance_names: ${{ vars.INSTANCE_NAMES }}  # Comma-separated list of instance names
+      instance_names: "teste,teste123"  # Comma-separated list of instance names
     secrets:
       GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
       GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
