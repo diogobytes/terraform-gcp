@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       instance_names:
-        description: 'Comma-separated list of Cloud SQL instance names'
+        description: 'Comma-separated list of Cloud SQL instance names or "ALL"'
         required: true
         type: string
     secrets:
@@ -44,11 +44,22 @@ jobs:
         with:
           version: '>= 363.0.0'
 
+      - name: List Cloud SQL Instances if ALL specified
+        if: ${{ inputs.instance_names == 'ALL' }}
+        id: list-instances
+        run: |
+          gcloud sql instances list --format="value(name)" --project=${{ secrets.GCP_PROJECT_ID }} > instances.txt
+
       - name: Manage Cloud SQL Instances
         run: |
           action="${{ inputs.action }}"
-          IFS=',' read -r -a instances <<< "${{ inputs.instance_names }}"
-          for instance in "${instances[@]}"; do
+          if [ "${{ inputs.instance_names }}" == "ALL" ]; then
+            instances=$(cat instances.txt)
+          else
+            IFS=',' read -r -a instances <<< "${{ inputs.instance_names }}"
+          fi
+
+          for instance in ${instances[@]}; do
             echo "Performing action '$action' on instance '$instance'"
             if [ "$action" == "start" ]; then
               gcloud sql instances patch "$instance" --activation-policy=ALWAYS --project=${{ secrets.GCP_PROJECT_ID }}
