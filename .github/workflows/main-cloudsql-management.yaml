@@ -32,6 +32,7 @@ jobs:
             fi
           else
             echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is not schedule
+          fi
 
   start-stop-cloudsql-instances:
     name: Start/Stop Cloud SQL Instances
