@@ -8,8 +8,8 @@ on:
         default: 'stop'
         required: true
         type: string
-      instance_name:
-        description: 'Name of the Cloud SQL instance'
+      instance_names:
+        description: 'Comma-separated list of Cloud SQL instance names'
         required: true
         type: string
     secrets:
@@ -25,8 +25,8 @@ permissions:
   contents: read
 
 jobs:
-  run:
-    name: Manage Cloud SQL Instance
+  manage-instances:
+    name: Manage Cloud SQL Instances
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -44,16 +44,18 @@ jobs:
         with:
           version: '>= 363.0.0'
 
-      - name: Manage Cloud SQL Instance
+      - name: Manage Cloud SQL Instances
         run: |
           action="${{ inputs.action }}"
-          instance="${{ inputs.instance_name }}"
-          echo "Performing action '$action' on instance '$instance'"
-          if [ "$action" == "start" ]; then
-            gcloud sql instances patch "$instance" --activation-policy=ALWAYS --project=${{ secrets.GCP_PROJECT_ID }}
-          elif [ "$action" == "stop" ]; then
-            gcloud sql instances patch "$instance" --activation-policy=NEVER --project=${{ secrets.GCP_PROJECT_ID }}
-          else
-            echo "Invalid action specified."
-            exit 1
-          fi
+          IFS=',' read -r -a instances <<< "${{ inputs.instance_names }}"
+          for instance in "${instances[@]}"; do
+            echo "Performing action '$action' on instance '$instance'"
+            if [ "$action" == "start" ]; then
+              gcloud sql instances patch "$instance" --activation-policy=ALWAYS --project=${{ secrets.GCP_PROJECT_ID }}
+            elif [ "$action" == "stop" ]; then
+              gcloud sql instances patch "$instance" --activation-policy=NEVER --project=${{ secrets.GCP_PROJECT_ID }}
+            else
+              echo "Invalid action specified."
+              exit 1
+            fi
+          done

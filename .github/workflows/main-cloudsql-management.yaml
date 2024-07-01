@@ -6,12 +6,13 @@ on:
   push:
     branches:
       - main
-env:
-  START_CRON: '00 23 * * 1'
 
 permissions:
   id-token: write
   contents: read
+
+env:
+  START_CRON: '00 23 * * 1'
 
 jobs:
   determine-action:
@@ -31,29 +32,15 @@ jobs:
             fi
           else
             echo "action=stop" >> $GITHUB_OUTPUT  # Default action if event is not schedule
-          fi
 
-  start-stop-cloudsql-instance-teste:
-    name: Start/Stop Cloud SQL Instance teste
+  start-stop-cloudsql-instances:
+    name: Start/Stop Cloud SQL Instances
     needs: determine-action
     uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
     with:
       action: ${{ needs.determine-action.outputs.action }}
-      instance_name: "teste"
+      instance_names: "teste,teste123"  # Comma-separated list of instance names
     secrets:
       GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
       GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-
-  start-stop-cloudsql-instance-teste123:
-    name: Start/Stop Cloud SQL Instance teste123
-    needs: determine-action
-    uses: ./.github/workflows/reusable-cloudsql-workflow.yaml
-    with:
-      action: ${{ needs.determine-action.outputs.action }}
-      instance_name: "teste123"
-    secrets:
-      GCP_WORKLOAD_IDENTITY_PROVIDER_NAME: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
-      GCP_WORKLOAD_IDENTITY_SA_EMAIL: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
-      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-    
