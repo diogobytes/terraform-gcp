@@ -5,7 +5,7 @@ on:
     inputs:
       action:
         description: 'Action to perform (start or stop)'
-        default: 'stop'
+        default: 'start'
         required: true
         type: string
       instance_names:
