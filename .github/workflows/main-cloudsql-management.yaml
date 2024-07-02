@@ -1,8 +1,8 @@
-name: Start or Stop Cloud SQL Instances Caller
+name: Start or Stop Cloud SQL Instances 2
 
 on:
   schedule:
-    - cron: '00 23 * * 1'
+    - cron: '00 23 * * 2'
   push:
     branches:
       - main
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 env:
-  START_CRON: '00 23 * * 1'
+  START_CRON: '00 23 * * 2'
 
 jobs:
   determine-action:
