@@ -1,4 +1,4 @@
-name: Reusable Cloud SQL Instance Management (Start and Stop staging)
+name: Reusable Cloud SQL Instance Management (Start and Stop )
 
 on:
   workflow_call:
