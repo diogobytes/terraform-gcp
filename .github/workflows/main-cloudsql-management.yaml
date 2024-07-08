@@ -1,5 +1,5 @@
 
-name: Start or Stop Cloud SQL Instances
+name: Start or Stop Cloud SQL Instances Staging
 
 
 on:
