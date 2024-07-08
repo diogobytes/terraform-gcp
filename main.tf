@@ -1,5 +1,5 @@
 locals {
-  project_id  = "arctic-ocean-427610-u4"
+  project_id  = ""
   gh_username = "diogobytes"
 }
 

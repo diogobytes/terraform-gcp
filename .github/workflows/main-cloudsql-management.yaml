@@ -1,6 +1,5 @@
 
-name: Start or Stop Cloud SQL Instances Cherry Pick
-
+name: Start or Stop Cloud SQL Instances
 
 on:
   schedule:
