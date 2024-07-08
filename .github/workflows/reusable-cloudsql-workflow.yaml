@@ -1,4 +1,4 @@
-name: Reusable Cloud SQL Instance Management test
+name: Reusable Cloud SQL Instance Management 
 
 on:
   workflow_call:
