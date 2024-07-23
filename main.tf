@@ -1,6 +1,6 @@
 locals {
   project_id  = ""
-  gh_username = "diogobytes"
+  gh_username = "diogo"
 }
 
 provider "google" {
